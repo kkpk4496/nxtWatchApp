@@ -1,0 +1,30 @@
+.link-container {
+  display: flex;
+  align-items: center;
+  height: 50px;
+  text-decoration: none;
+  font-weight: 500;
+  cursor: pointer;
+}
+.navbar-container {
+  display: flex;
+  flex-direction: column;
+  min-width: 20%;
+  justify-content: space-between;
+  height: 100vh;
+}
+.contact {
+  font-size: 17px;
+  color: #475569;
+  font-weight: 700;
+}
+.social-media {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 10vw;
+}
+.social-icons {
+  width: 45px;
+  margin-right: 15px;
+}

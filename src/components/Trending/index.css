@@ -1,0 +1,50 @@
+.gaming-heading {
+  background-color: #f1f1f1;
+  padding: 30px;
+  width: 78vw;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+li {
+  list-style: none;
+}
+.link {
+  text-decoration: none;
+  font-weight: 500;
+  margin: 15px;
+  color: #909090;
+}
+.trend-container {
+  display: flex;
+  flex-direction: column;
+  margin: 50px;
+  flex-wrap: wrap;
+}
+.trend-subContainer {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+.trend-image {
+  height: 250px;
+  width: 400px;
+}
+.trend-head {
+  color: #909090;
+}
+.trend-details {
+  display: flex;
+  flex-direction: column;
+  margin-left: 25px;
+  max-width: 20vw;
+}
+
+.views-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.sp {
+  margin-top: 42px;
+}
