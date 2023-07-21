@@ -15,6 +15,7 @@ import {
   SearchInput,
   SearchButton,
   NamePara,
+  BannerPara,
 } from './styledComponents'
 import ErrorMessage from '../ErrorMessage'
 import Load from '../Load'
@@ -83,7 +84,7 @@ class Home extends Component {
   }
 
   renderLoading = () => (
-    <div className="loader" data-testid="home">
+    <div className="loader" data-testid="loader">
       <Load />
     </div>
   )
@@ -104,7 +105,7 @@ class Home extends Component {
     return (
       <li className="home-video-container">
         {videosList.map(item => (
-          <Link to={`/videos/:${item.id}`} key={item.id} className="links">
+          <Link to={`/videos/${item.id}`} key={item.id} className="links">
             <div key={item.id} className="home-subContainer">
               <li>
                 <img
@@ -198,16 +199,16 @@ class Home extends Component {
                       <AiOutlineClose size={20} />
                     </button>
                   </div>
-                  <p className="banner-head">
+                  <BannerPara outline={outline}>
                     Buy Nxt Watch Premium prepaid plans with
                     <br />
                     UPI
-                  </p>
+                  </BannerPara>
                   <button type="button" className="banner-purchase">
                     GET IT NOW
                   </button>
                 </Banner>
-                <HomeContainer activeTheme={activeTheme}>
+                <HomeContainer activeTheme={activeTheme} data-testid="Home">
                   <div className="search-container">
                     <SearchInput
                       type="search"

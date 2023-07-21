@@ -5,6 +5,8 @@ import {SiYoutubegaming} from 'react-icons/si'
 import ErrorMessage from '../ErrorMessage'
 import Load from '../Load'
 import './index.css'
+import {GamePara, GameContainer} from './styledComponents'
+import NxtWatchContext from '../../Context/NxtWatchContext'
 
 const apiStatusValue = {
   initial: 'INITIAL',
@@ -59,30 +61,43 @@ class Gaming extends Component {
   renderSuccess = () => {
     const {videosList} = this.state
     return (
-      <li className="list-container">
-        {videosList.map(item => (
-          <Link to={`/videos/${item.id}`} key={item.id} className="link">
-            <div key={item.id}>
-              <li>
-                <img
-                  src={`${item.thumbnailUrl}`}
-                  width="180px"
-                  alt="video thumbnail"
-                  className="game-image"
-                />
+      <NxtWatchContext.Consumer>
+        {value => {
+          const {activeTheme} = value
+          return (
+            <GameContainer activeTheme={activeTheme} data-testid="gaming">
+              <li className="list-container">
+                {videosList.map(item => (
+                  <Link
+                    to={`/videos/${item.id}`}
+                    key={item.id}
+                    className="link"
+                  >
+                    <div key={item.id}>
+                      <li>
+                        <img
+                          src={`${item.thumbnailUrl}`}
+                          width="180px"
+                          alt="video thumbnail"
+                          className="game-image"
+                        />
+                      </li>
+                      <li>
+                        <GamePara color={activeTheme} fontSize="15px">
+                          {item.title}
+                        </GamePara>
+                      </li>
+                      <li>
+                        <p fontSize="12px">{item.views} Watching Worldwide</p>
+                      </li>
+                    </div>
+                  </Link>
+                ))}
               </li>
-              <li>
-                <p className="game-head" fontSize="15px">
-                  {item.title}
-                </p>
-              </li>
-              <li>
-                <p fontSize="12px">{item.views} Watching Worldwide</p>
-              </li>
-            </div>
-          </Link>
-        ))}
-      </li>
+            </GameContainer>
+          )
+        }}
+      </NxtWatchContext.Consumer>
     )
   }
 
@@ -105,7 +120,7 @@ class Gaming extends Component {
     const {outline} = this.state
     console.log(outline)
     return (
-      <div data-testid="gaming">
+      <div>
         <div className="gaming-heading">
           <h1>
             <span className="gaming-logo">

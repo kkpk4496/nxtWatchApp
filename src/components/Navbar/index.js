@@ -38,6 +38,7 @@ class Navbar extends Component {
       <NxtWatchContext.Consumer>
         {value => {
           const {activeTheme} = value
+          console.log(activeTheme)
           return (
             <div className="navbar-container">
               <NavContainer>

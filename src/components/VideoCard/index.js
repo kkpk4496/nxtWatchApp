@@ -1,12 +1,11 @@
 import {Component} from 'react'
 import Cookies from 'js-cookie'
 import ReactPlayer from 'react-player'
-
 import {AiOutlineLike, AiOutlineDislike} from 'react-icons/ai'
 import {MdPlaylistAdd} from 'react-icons/md'
+import Load from '../Load'
 
 import {
-  VideoFrameContainer,
   VideoContainer,
   ParaEl,
   AttributesContainer,
@@ -17,16 +16,25 @@ import {
 } from './styledComponents'
 
 import NxtWatchContext from '../../Context/NxtWatchContext'
+import ErrorMessage from '../ErrorMessage'
 
 import './index.css'
+
+const apiStatusValue = {
+  initial: 'INITIAL',
+  success: 'SUCCESS',
+  failure: 'FAILURE',
+  inProgress: 'IN_PROGRESS',
+}
 
 class VideoCard extends Component {
   state = {
     videoDetails: {},
-    channelDataObj: {},
     liked: false,
     disliked: false,
     saved: false,
+    apiStatus: apiStatusValue[0],
+    theme: '',
   }
 
   componentDidMount() {
@@ -38,6 +46,7 @@ class VideoCard extends Component {
   }
 
   getData = async () => {
+    this.setState({apiStatus: apiStatusValue.inProgess})
     this.mounted = true
     const {match} = this.props
     const {params} = match
@@ -63,18 +72,16 @@ class VideoCard extends Component {
         title: data.title,
         videoUrl: data.video_url,
         viewCount: data.view_count,
-      }
-      const channelData = {
         name: data.channel.name,
         profileImageUrl: data.channel.profile_image_url,
         subscriberCount: data.channel.subscriber_count,
       }
-      if (this.mounted) {
-        await this.setState({
-          videoDetails: convertedData,
-          channelDataObj: channelData,
-        })
-      }
+      this.setState({
+        videoDetails: convertedData,
+        apiStatus: apiStatusValue.success,
+      })
+    } else {
+      this.setState({apiStatus: apiStatusValue.failure})
     }
   }
 
@@ -86,75 +93,97 @@ class VideoCard extends Component {
     this.setState({liked: true, disliked: false})
   }
 
-  isSaved = async () => {
-    const {saved} = this.state
-    if (saved) {
-      await this.setState({saved: false})
-    } else {
-      await this.setState({saved: true})
+  renderLoading = () => (
+    <div className="loader" data-testid="loader">
+      <Load />
+    </div>
+  )
+
+  renderFailure = activeTheme => (
+    <>
+      <ErrorMessage refresh={this.getData} activeTheme={activeTheme} />
+    </>
+  )
+
+  apiStatusResult = () => {
+    const {apiStatus, theme} = this.state
+    switch (apiStatus) {
+      case apiStatusValue.inProgess:
+        return this.renderLoading()
+      case apiStatusValue.success:
+        return this.renderSuccess()
+      case apiStatusValue.failure:
+        return this.renderFailure(theme)
+      default:
+        return null
     }
   }
 
-  render() {
-    const {videoDetails, channelDataObj, liked, disliked, saved} = this.state
-    const {videoUrl, title, viewCount, publishedAt, description} = videoDetails
-    console.log(videoUrl)
+  renderSuccess = () => {
+    const {videoDetails, liked, disliked, saved} = this.state
+    const {
+      videoUrl,
+      title,
+      viewCount,
+      publishedAt,
+      description,
+      name,
+      profileImageUrl,
+      subscriberCount,
+    } = videoDetails
     return (
       <NxtWatchContext.Consumer>
         {values => {
           const {activeTheme, addSavedVideos} = values
-          const bgColor = activeTheme === 'light' ? '#ffffff' : '#000000'
-          const color = activeTheme === 'light' ? '#000000' : '#ffffff'
-
           const onSave = () => {
-            this.isSaved()
             addSavedVideos(videoDetails)
+            this.setState(prevState => ({
+              saved: !prevState.saved,
+              theme: activeTheme,
+            }))
           }
 
           return (
             <VideoContainer
-              bgColor={bgColor}
-              color={color}
+              bgColor={activeTheme}
+              color={activeTheme}
               data-testid="videoItemDetails"
             >
-              <VideoFrameContainer>
-                <ReactPlayer url={videoUrl} controls className="react-player" />
-                <ParaEl>
-                  <b>{title}</b>
-                </ParaEl>
-              </VideoFrameContainer>
+              <ReactPlayer url={videoUrl} controls className="react-player" />
+              <ParaEl>
+                <p>{title}</p>
+              </ParaEl>
+
               <AttributesContainer>
                 <ParaEl>
                   {viewCount} views . {publishedAt}
                 </ParaEl>
-                <ChannelContainer color={color}>
+                <ChannelContainer color={activeTheme}>
                   <IconParas
                     onClick={this.isLiked}
-                    iconColor={liked ? '#3b82f6' : color}
+                    iconColor={liked ? '#2563eb' : '#64748b'}
                   >
                     <AiOutlineLike size={20} /> Like
                   </IconParas>
                   <IconParas
                     onClick={this.isDisliked}
-                    iconColor={disliked ? '#3b82f6' : color}
+                    iconColor={disliked ? '#2563eb' : '#64748b'}
                   >
                     <AiOutlineDislike size={20} /> Dislike
                   </IconParas>
                   <IconParas
                     onClick={onSave}
-                    iconColor={saved ? '#3b82f6' : color}
+                    iconColor={saved ? '#2563eb' : '#64748b'}
                   >
                     <MdPlaylistAdd size={20} /> {saved ? 'Saved' : 'Save'}
                   </IconParas>
                 </ChannelContainer>
               </AttributesContainer>
               <ChannelContainer>
-                <ImageEl src={channelDataObj.profileImageUrl} />
+                <ImageEl src={profileImageUrl} alt="channel logo" />
                 <ContentContainer>
-                  <ParaEl>
-                    <b>{channelDataObj.name}</b>
-                  </ParaEl>
-                  <ParaEl>{channelDataObj.subscriberCount}</ParaEl>
+                  <ParaEl>{name}</ParaEl>
+                  <ParaEl>{subscriberCount} subscribers</ParaEl>
                 </ContentContainer>
               </ChannelContainer>
               <ParaEl padding="30px">{description}</ParaEl>
@@ -163,6 +192,10 @@ class VideoCard extends Component {
         }}
       </NxtWatchContext.Consumer>
     )
+  }
+
+  render() {
+    return <>{this.apiStatusResult()}</>
   }
 }
 

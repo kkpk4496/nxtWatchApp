@@ -2,22 +2,12 @@ import styled from 'styled-components'
 
 export const VideoContainer = styled.div`
   height: 100vh;
-  width: 100%;
+  width: 60vw;
   overflow-y: auto;
-  background-color: ${props => props.bgColor};
-  color: ${props => props.color};
+  background-color: ${props => (props.bgColor ? '#090909' : '#f9f9f9')};
+  color: ${props => (props.color ? '#f9f9f9' : '#090909')};
   overflow: auto;
   padding: 20px 5px;
-`
-
-export const VideoFrameContainer = styled.div`
-  width: 100%;
-  overflow: auto;
-  @media (min-width: 768px) {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
 `
 export const ParaEl = styled.p`
   font-size: 15px;
@@ -50,7 +40,7 @@ export const ContentContainer = styled.div``
 export const ImageEl = styled.img`
   height: 40px;
 `
-export const IconParas = styled.p`
+export const IconParas = styled.button`
   cursor: pointer;
   color: ${props => props.iconColor};
   font-size: 15px;
@@ -58,4 +48,6 @@ export const IconParas = styled.p`
   padding: 0 20px;
   display: flex;
   align-items: center;
+  background-color: transparent;
+  border: none;
 `

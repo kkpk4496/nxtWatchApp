@@ -26,10 +26,10 @@ const Header = props => {
       >
         {close => (
           <div className="logout-popup">
-            <p>Are you sure you want to logout?</p>
+            <p>Are you sure, you want to logout</p>
             <div>
               <LogoutBtn type="button" onClick={() => close()}>
-                Close
+                Cancel
               </LogoutBtn>
               <button
                 type="button"

@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-export const NavContainer = styled.ul`
+export const NavContainer = styled.li`
   display: flex;
   flex-direction: column;
   min-width: 20%;

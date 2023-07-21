@@ -1,6 +1,6 @@
 import {Component} from 'react'
 import './App.css'
-import {Switch, Route} from 'react-router-dom'
+import {Switch, Route, Redirect} from 'react-router-dom'
 import Login from './components/Login'
 import ProtectedRoute from './components/ProtectedRoute'
 import Header from './components/Header'
@@ -12,6 +12,7 @@ import SavedVideos from './components/SavedVideos'
 import NxtWatchContext from './Context/NxtWatchContext'
 import {MainContainer} from './styledComponents'
 import VideoCard from './components/VideoCard'
+import NotFound from './components/NotFound'
 
 class App extends Component {
   state = {savedVideos: [], activeTheme: false}
@@ -20,11 +21,32 @@ class App extends Component {
     this.setState(prevState => ({activeTheme: !prevState.activeTheme}))
   }
 
+  addSavedVideos = async data => {
+    const {savedVideos} = this.state
+    if (savedVideos.length > 0) {
+      const checkSavedVideos = savedVideos.filter(item => item.id === data.id)
+      if (checkSavedVideos.length === 0) {
+        await this.setState({
+          savedVideos: [...savedVideos, data],
+        })
+      }
+    } else {
+      await this.setState({
+        savedVideos: [...savedVideos, data],
+      })
+    }
+  }
+
   render() {
-    const {savedVideos, activeTheme} = this.state
+    const {activeTheme, savedVideos} = this.state
     return (
       <NxtWatchContext.Provider
-        value={{activeTheme, savedVideos, changeTheme: this.changeTheme}}
+        value={{
+          activeTheme,
+          savedVideos,
+          addSavedVideos: this.addSavedVideos,
+          changeTheme: this.changeTheme,
+        }}
       >
         <MainContainer activeTheme={activeTheme}>
           <Switch>
@@ -52,6 +74,8 @@ class App extends Component {
                       path="/videos/:id"
                       component={VideoCard}
                     />
+                    <Route path="/not-found" component={NotFound} />
+                    <Redirect to="not-found" />
                   </Switch>
                 </div>
               </div>

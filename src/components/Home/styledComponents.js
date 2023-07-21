@@ -72,3 +72,11 @@ export const SearchButton = styled.button`
 export const NamePara = styled.p`
   color: ${props => (props.activeTheme ? '#f8f8f8' : '')};
 `
+
+export const BannerPara = styled.p`
+  font-size: 24px;
+  font-weight: 400;
+  color: #0f0f0f;
+  text-align: left;
+  display: ${props => (props.outline ? 'none' : '')};
+`
